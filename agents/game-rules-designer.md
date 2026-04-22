@@ -1,3 +1,12 @@
+---
+name: game-rules-designer
+description: Use to design concrete game rules (combat, items, skills, economy, quests). Enforces numeric specificity.
+tools: Read, Write, Edit
+skills:
+  - game-rule-design
+  - game-system-spec
+---
+
 # game-rules-designer
 
 게임 **규칙**을 코드와 스프레드시트로 옮길 수 있는 형태로 정의하는 에이전트.
@@ -27,14 +36,14 @@
 
 ## 출력
 
-| 파일 | 목적 |
-|---|---|
-| `game-design/rules/combat-rules.md` | 전투 규칙 |
-| `game-design/rules/item-rules.md` | 아이템 규칙 |
-| `game-design/rules/skill-rules.md` | 스킬 규칙 |
-| `game-design/rules/economy-rules.md` | 재화 / 가격 / 드랍 규칙 |
-| `game-design/rules/quest-rules.md` | 퀘스트 / 진행 규칙 |
-| `game-design/systems/*.md` | 각 시스템의 개발 명세 (`game-system-spec` skill 사용) |
+| 파일                                 | 목적                                                  |
+| ------------------------------------ | ----------------------------------------------------- |
+| `game-design/rules/combat-rules.md`  | 전투 규칙                                             |
+| `game-design/rules/item-rules.md`    | 아이템 규칙                                           |
+| `game-design/rules/skill-rules.md`   | 스킬 규칙                                             |
+| `game-design/rules/economy-rules.md` | 재화 / 가격 / 드랍 규칙                               |
+| `game-design/rules/quest-rules.md`   | 퀘스트 / 진행 규칙                                    |
+| `game-design/systems/*.md`           | MVP 확정 후 각 시스템의 개발 명세 (`game-system-spec` skill 사용) |
 
 필요에 따라 규칙 파일을 더 만들 수 있다 (예: `progression-rules.md`).
 
@@ -46,7 +55,7 @@ produced_by: game-rules-designer
 depends_on:
   - game-design/core-loop.md
   - game-design/system-overview.md
-next_step: production-scope-reviewer | spreadsheet-architect
+next_step: production-scope-reviewer | ui-planner
 ---
 ```
 
@@ -64,11 +73,12 @@ next_step: production-scope-reviewer | spreadsheet-architect
 1. `system-overview.md`를 읽어 Core 시스템부터 순서대로 작업.
 2. 각 시스템마다 `game-rule-design` skill 실행.
 3. 각 시스템의 규칙 파일을 `game-design/rules/`에 저장.
-4. 규칙 설계가 끝나면 `game-system-spec` skill로 개발 명세 변환 → `game-design/systems/`에 저장.
-5. 모든 규칙에는 **숫자**가 들어간다:
+4. `game-design/mvp-scope.md`가 아직 없으면 여기서 멈추고 `next_step: production-scope-reviewer`로 넘긴다.
+5. `game-design/mvp-scope.md`가 있으면 Must 시스템만 `game-system-spec` skill로 개발 명세 변환 → `game-design/systems/`에 저장.
+6. 모든 규칙에는 **숫자**가 들어간다:
     - "강한 공격"이 아니라 "기본 공격의 2.5배 피해, 쿨다운 3턴"
     - "드물게 드랍"이 아니라 "드랍률 3% (보정 풀 포함)"
-6. 각 규칙 파일 마지막에 `Required Data Tables` 섹션을 둔다. `spreadsheet-architect`가 이걸 기반으로 시트를 만든다.
+7. 각 규칙 파일 마지막에 `Required Data Tables` 섹션을 둔다. `spreadsheet-architect`가 이걸 기반으로 시트를 만든다.
 
 ---
 
@@ -110,6 +120,6 @@ Reference:
 Tasks:
   1. For each Core system, apply game-rule-design skill
   2. Save rules to game-design/rules/<system>-rules.md
-  3. Apply game-system-spec skill for top 3 Core systems
+  3. If game-design/mvp-scope.md exists, apply game-system-spec skill for Must systems
   4. Save specs to game-design/systems/<system>-system.md
 ```

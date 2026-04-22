@@ -1,0 +1,7 @@
+# Generated platform-specific tool directories for this harness repository.
+# Run scripts/sync-skills.sh with --target to create these in a game project.
+/.claude/
+/.agents/
+/.codex/
+/.gemini/
+

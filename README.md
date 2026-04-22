@@ -1,124 +1,359 @@
-# Game Design Harness
+# Game AI Harness
 
-게임 기획부터 개발 연결까지를 **Agent + Skill 하네스**로 구현한 저장소.
+이 프로젝트는 게임 개발 과정에서 AI 도구를 효과적으로 활용하기 위한 **Agent + Skill 기반 게임 개발 하네스**입니다.
 
-Claude Code / Codex CLI / Gemini CLI 크로스 플랫폼 호환.
-
----
-
-## 핵심 아이디어
-
-```text
-Agent + Skill  = 게임 기획의 source of truth (뼈대)
-Web LLM        = 컨셉 이미지 / 무드보드 / 시각 레퍼런스 (살)
-Coding Agent   = 실제 개발
-```
-
-기획도 Skill + Agent로 한다. 대화창에 휘발되지 않고 프로젝트 파일로 남는다.
-리뷰 agent를 반드시 쌍으로 써서 "멋진데 못 만드는 게임"을 방지한다.
+핵심 목표는 Web LLM에 모든 기획을 맡기는 것이 아니라, 게임 기획부터 규칙 설계, 데이터화, 화면 명세, 구현, 검증까지를 **전문 Agent와 Skill로 구조화**하는 것입니다.
 
 ---
 
-## 폴더 구조
+## 핵심 방향
 
 ```text
-game-harness/
-├── AGENTS.md                     # 공통 지침 (모든 플랫폼 공통)
-├── CLAUDE.md                     # Claude Code 전용 보완
-├── GEMINI.md                     # Gemini CLI 전용 보완
-├── README.md                     # (이 문서)
-│
-├── agents/                       # 플랫폼 중립 agent 정의 (소스)
-│   ├── game-director.md
-│   ├── game-concept-designer.md
-│   ├── game-rules-designer.md
-│   ├── spreadsheet-architect.md
-│   ├── balance-reviewer.md
-│   └── production-scope-reviewer.md
-│
-├── skills/                       # 플랫폼 중립 skill 정의 (소스)
-│   ├── game-concept-brief/SKILL.md
-│   ├── game-core-loop-design/SKILL.md
-│   ├── game-rule-design/SKILL.md
-│   ├── game-system-spec/SKILL.md
-│   └── game-mvp-scope/SKILL.md
-│
-├── .claude/
-│   ├── agents/                   # Claude Code용 (frontmatter 포함 복사본)
-│   └── skills/                   # skills/ 동기화 복사본
-│
-├── .agents/
-│   └── skills/                   # Codex CLI / agents.md 표준 복사본
-│
-└── scripts/
-    └── sync-skills.sh            # skills/ → 각 플랫폼 경로 동기화
+Agent + Skill = 게임 기획과 개발 명세의 Source of Truth
+Web LLM       = 시각화, 아이디어 확장, 이미지 생성 보조
+Coding Agent  = 실제 구현과 검증 도구
 ```
+
+Agent + Skill 방식은 다음 장점이 있습니다.
+
+- 반복 가능한 구조로 기획을 생성할 수 있음
+- 개발 가능한 명세로 바로 연결할 수 있음
+- 게임 규칙을 데이터 테이블과 코드 구조로 변환하기 쉬움
+- 프로젝트 내부 문서와 직접 연결 가능
+- 기획, 밸런스, 화면 설계, 구현, 리뷰를 역할별로 분리 가능
+
+---
+
+## 전체 개발 흐름
+
+```text
+1. 사람이 최소 입력을 제공한다.
+   - 장르
+   - 플랫폼
+   - 핵심 재미
+   - 원하는 분위기
+   - 피하고 싶은 요소
+
+2. game-director
+   - game-concept-brief
+   - game-core-loop-design
+
+3. game-concept-designer
+   - 세계관
+   - 아트 방향
+   - Web LLM 이미지 프롬프트
+
+4. game-rules-designer
+   - game-rule-design
+   - 전투, 아이템, 성장, 보상 규칙 설계
+
+5. production-scope-reviewer
+   - game-mvp-scope
+   - MVP 범위 축소
+
+6. spreadsheet-architect
+   - game-spreadsheet-authoring
+   - 게임 데이터 테이블 생성
+
+7. balance-reviewer
+   - game-balance-review
+   - 성장, 보상, 가격, 드랍률 검토
+
+8. game-rules-designer
+   - game-system-spec
+   - MVP 시스템 개발 명세 확정
+
+9. ui-planner
+   - design-system-spec
+   - game-screen-spec
+   - UI 디자인 시스템과 화면 명세 작성
+
+10. Web LLM 사용
+    - 컨셉 이미지
+    - UI mockup
+    - 아이콘 시안
+    - 무드보드 생성
+
+11. Claude Code / Codex / Gemini
+    - game-ui-implementation
+    - 실제 화면 / 로직 / 데이터 구현
+
+12. Preview / QA
+    - game-browser-preview-review
+    - 브라우저 확인
+    - Visual Review
+    - 빌드 / 테스트
+```
+
+**절대 규칙:** `game-rule-design` 이후에는 반드시 `game-mvp-scope`를 거칩니다. MVP 축소 없이 스프레드시트, 시스템 명세, 구현에 들어가지 않습니다.
+
+---
+
+## Agent 구성
+
+| Agent | 역할 | 출력 위치 |
+|---|---|---|
+| `game-director` | 전체 방향, pillars, core loop, 시스템 목록 | `game-design/game-pillars.md`, `game-design/core-loop.md`, `game-design/system-overview.md` |
+| `game-concept-designer` | 세계관, 분위기, 플레이어 판타지, 아트 방향 | `game-design/concept-brief.md`, `game-design/art/*.md` |
+| `game-rules-designer` | 전투/아이템/스킬/성장/보상/드랍/상점/퀘스트 규칙 | `game-design/rules/*.md`, `game-design/systems/*.md` |
+| `production-scope-reviewer` | MVP 축소, 복잡도 평가, 구현 순서 | `game-design/mvp-scope.md`, `ai/reviews/production/*.md` |
+| `spreadsheet-architect` | 규칙을 데이터 테이블로 변환 | `game-design/spreadsheets/*.csv`, `game-design/spreadsheets/game-master.xlsx` |
+| `balance-reviewer` | 성장곡선, 보상량, 드랍률, 가격, 이상치 검토 | `ai/reviews/balance/*.md` |
+| `ui-planner` | UI 디자인 시스템, 화면 흐름, 화면별 상태/데이터 요구사항 | `ai/specs/ui/*.md` |
+
+Agent 역할 정의 원본은 `agents/*.md`에 있습니다. 플랫폼별 실행 형식은 `scripts/sync-skills.sh`가 대상 게임 프로젝트에 생성합니다.
+
+- Claude Code: `<target>/.claude/agents/*.md`
+- Codex: `<target>/.codex/agents/*.toml`
+- Gemini CLI: `<target>/.gemini/commands/agents/*.toml` 명령으로 역할 호출
+
+Gemini CLI에는 Claude/Codex와 같은 1:1 subagent 파일 형식이 없으므로, 공식 custom command 형식으로 `agents/*.md` 역할 정의를 주입합니다.
+
+---
+
+## Skill 구성
+
+| Skill | 호출 주체 | 목적 |
+|---|---|---|
+| `game-concept-brief` | `game-director`, `game-concept-designer` | 초기 컨셉을 정형 문서로 정리 |
+| `game-core-loop-design` | `game-director` | 30초 / 5분 / 1일 / 장기 루프 정의 |
+| `game-rule-design` | `game-rules-designer` | 시스템 규칙을 코드/시트화 가능한 형태로 설계 |
+| `game-mvp-scope` | `production-scope-reviewer` | 기획 범위를 실구현 가능한 MVP로 축소 |
+| `game-spreadsheet-authoring` | `spreadsheet-architect` | 규칙과 MVP 범위를 데이터 테이블로 변환 |
+| `game-balance-review` | `balance-reviewer` | 성장, 보상, 가격, 드랍률, 전투 시간 검토 |
+| `game-system-spec` | `game-rules-designer` | 시스템을 개발 명세로 변환 |
+| `design-system-spec` | `ui-planner` | UI 디자인 시스템 토큰과 컴포넌트 규칙 정의 |
+| `game-screen-spec` | `ui-planner` | 화면별 상태, 데이터 요구사항, 인터랙션 명세 |
+| `game-ui-implementation` | Coding Agent | 화면 명세와 디자인 시스템 기준으로 실제 UI 구현 |
+| `game-browser-preview-review` | Coding Agent / Reviewer | 브라우저 preview에서 상태와 반응형 검토 |
+
+Skill 정의는 `skills/<skill-name>/SKILL.md`에 있습니다.
+
+---
+
+## 플랫폼별 공식 대응
+
+| 플랫폼 | 공식 기능 | 대상 프로젝트 설치 위치 |
+|---|---|---|
+| Claude Code | Project subagents | `.claude/agents/*.md` |
+| Claude Code | Project skills | `.claude/skills/<skill>/SKILL.md` |
+| Codex | AGENTS.md project instructions | `AGENTS.md` |
+| Codex | Repository skills | `.agents/skills/<skill>/SKILL.md` |
+| Codex | Project custom agents | `.codex/agents/*.toml` |
+| Gemini CLI | Context file | `GEMINI.md` |
+| Gemini CLI | Workspace skills | `.gemini/skills/<skill>/SKILL.md`, `.agents/skills/<skill>/SKILL.md` |
+| Gemini CLI | Project custom commands | `.gemini/commands/agents/*.toml` |
+
+참고:
+- Claude Code subagents: https://docs.anthropic.com/en/docs/claude-code/sub-agents
+- Claude Code skills: https://docs.anthropic.com/en/docs/claude-code/skills
+- Codex AGENTS.md: https://developers.openai.com/codex/guides/agents-md
+- Codex skills: https://developers.openai.com/codex/skills
+- Codex subagents: https://developers.openai.com/codex/subagents
+- Gemini CLI skills: https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/skills.md
+- Gemini CLI custom commands: https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/custom-commands.md
+
+---
+
+## 권장 프로젝트 구조
+
+이 저장소는 하네스 원본입니다. 실제 게임 개발 프로젝트가 다른 경로에 있다면, 아래 원본을 `scripts/sync-skills.sh`로 대상 프로젝트에 설치합니다.
+
+### 하네스 저장소
+
+```text
+game-ai-agent/
+  AGENTS.md
+  CLAUDE.md
+  GEMINI.md
+  README.md
+
+  agents/
+    game-director.md
+    game-concept-designer.md
+    game-rules-designer.md
+    production-scope-reviewer.md
+    spreadsheet-architect.md
+    balance-reviewer.md
+    ui-planner.md
+
+  codex-agents/
+    game-director.toml
+    game-concept-designer.toml
+    game-rules-designer.toml
+    production-scope-reviewer.toml
+    spreadsheet-architect.toml
+    balance-reviewer.toml
+    ui-planner.toml
+
+  gemini-commands/
+    agents/
+      game-director.toml
+      game-concept-designer.toml
+      game-rules-designer.toml
+      production-scope-reviewer.toml
+      spreadsheet-architect.toml
+      balance-reviewer.toml
+      ui-planner.toml
+
+  skills/
+    game-concept-brief/
+    game-core-loop-design/
+    game-rule-design/
+    game-mvp-scope/
+    game-spreadsheet-authoring/
+    game-balance-review/
+    game-system-spec/
+    design-system-spec/
+    game-screen-spec/
+    game-ui-implementation/
+    game-browser-preview-review/
+
+  codex-config.toml
+
+  scripts/
+    sync-skills.sh
+```
+
+### 대상 게임 프로젝트
+
+```text
+game-project/
+  AGENTS.md
+  CLAUDE.md
+  GEMINI.md
+
+  game-design/
+    game-pillars.md
+    concept-brief.md
+    core-loop.md
+    system-overview.md
+    mvp-scope.md
+
+    rules/
+      combat-rules.md
+      item-rules.md
+      skill-rules.md
+      economy-rules.md
+      quest-rules.md
+
+    systems/
+      inventory-system.md
+      shop-system.md
+      quest-system.md
+      character-growth-system.md
+
+    spreadsheets/
+      SCHEMA.md
+      game-master.xlsx
+      item-master.csv
+      skill-master.csv
+      drop-table.csv
+
+    art/
+      art-direction.md
+      image-prompts.md
+      ui-mockup-prompts.md
+
+  ai/
+    specs/
+      ui/
+        design-system.md
+        screen-map.md
+        inventory-screen.md
+        shop-screen.md
+      systems/
+    reviews/
+      balance/
+      production/
+      visual/
+
+  .claude/
+    agents/
+    skills/
+
+  .agents/
+    skills/
+
+  .codex/
+    config.toml
+    agents/
+
+  .gemini/
+    commands/
+    skills/
+```
+
+---
+
+## 스킬 동기화
+
+```bash
+bash scripts/sync-skills.sh --target /path/to/game-project --tool all
+```
+
+특정 도구만 설치할 수도 있습니다.
+
+```bash
+bash scripts/sync-skills.sh --target /path/to/game-project --tool claude
+bash scripts/sync-skills.sh --target /path/to/game-project --tool codex
+bash scripts/sync-skills.sh --target /path/to/game-project --tool gemini
+```
+
+`skills/`, `agents/`, `codex-agents/`, `codex-config.toml`, `gemini-commands/`가 source입니다. 이 스크립트는 대상 프로젝트에 다음 공식 런타임 경로를 생성합니다.
+
+```text
+AGENTS.md         -> <target>/AGENTS.md
+CLAUDE.md         -> <target>/CLAUDE.md
+GEMINI.md         -> <target>/GEMINI.md
+skills/           -> <target>/.claude/skills/
+skills/           -> <target>/.agents/skills/
+skills/           -> <target>/.gemini/skills/
+agents/           -> <target>/.claude/agents/
+codex-agents/     -> <target>/.codex/agents/
+codex-config.toml -> <target>/.codex/config.toml
+gemini-commands/  -> <target>/.gemini/commands/
+```
+
+하네스 저장소 안의 `.claude/`, `.agents/`, `.codex/`, `.gemini/`는 생성물입니다. 원본을 고칠 때는 숨김 디렉토리가 아니라 위 source 디렉토리를 수정합니다.
 
 ---
 
 ## 빠른 시작
 
-### 1) 설치 (기존 게임 프로젝트에 얹기)
+### Claude Code
 
-```bash
-# 게임 프로젝트 루트로 이동한 뒤
-cp -r /path/to/game-harness/* ./
-cp -r /path/to/game-harness/.claude ./
-cp -r /path/to/game-harness/.agents ./
-```
-
-### 2) 스킬 동기화
-
-```bash
-bash scripts/sync-skills.sh
-```
-
-`skills/`가 single source of truth이고, 이 스크립트가 `.claude/skills/`와 `.agents/skills/`로 복사해준다.
-
-### 3) 첫 기획
-
-**Claude Code:**
 ```text
-> Use game-director. 입력: 장르=roguelike deckbuilder, 플랫폼=web,
-  핵심 재미=덱 빌딩 + 영구 성장, 분위기=다크 판타지,
-  참고=Slay the Spire, Inscryption.
-  game-concept-brief와 game-core-loop-design skill을 호출해서
-  결과를 game-design/ 하위에 저장해.
+Use game-director.
+입력: 장르=roguelike deckbuilder, 플랫폼=web,
+핵심 재미=덱 빌딩 + 영구 성장, 분위기=다크 판타지,
+참고=Slay the Spire, Inscryption.
+game-concept-brief와 game-core-loop-design skill을 호출해서
+결과를 game-design/ 하위에 저장해.
 ```
 
-**Codex CLI:**
+### Codex CLI
+
 ```bash
-codex run "agents/game-director.md 역할을 맡아서 \
-  game-concept-brief skill을 호출. \
-  입력은 프롬프트에서 받고 결과는 game-design/concept-brief.md에 저장."
+codex run "Spawn the game-director custom agent. \
+  입력: 장르=roguelike deckbuilder, 플랫폼=web, \
+  핵심 재미=덱 빌딩 + 영구 성장. \
+  game-design/ 하위에 concept brief와 core loop를 저장해."
 ```
 
-**Gemini CLI:**
+### Gemini CLI
+
 ```bash
-gemini "agents/game-director.md를 읽고 그 역할을 맡아. \
-  skills/game-concept-brief/SKILL.md에 따라 작업. \
-  출력은 game-design/concept-brief.md."
+gemini
+> /agents:game-director 장르=roguelike deckbuilder, 플랫폼=web, 핵심 재미=덱 빌딩 + 영구 성장
 ```
 
 ---
 
-## 권장 워크플로우
+## 운영 원칙
 
-```text
-1. game-director           → concept-brief + core-loop
-2. game-concept-designer   → 세계관 / 아트 방향
-3. game-rules-designer     → rules/*.md
-4. production-scope-reviewer → mvp-scope.md  ← 반드시 거친다
-5. spreadsheet-architect   → game-master.xlsx
-6. balance-reviewer        → 숫자 검토 → 3~5단계 피드백
-7. game-rules-designer     → game-system-spec으로 개발 명세 확정
-8. (외부) Web LLM          → 컨셉 이미지 / UI mockup
-9. Claude Code / Codex     → 실제 구현
-```
-
----
-
-## 한 문장으로
-
-> 기획도 Agent + Skill로 하고, 리뷰 Agent를 반드시 쌍으로 써라.
-> 그렇지 않으면 AI가 "멋진 쓰레기"를 자신감 있게 만든다.
+- 기획 Agent는 반드시 Review Agent와 함께 사용합니다.
+- Web LLM 결과물은 바로 구현하지 않고 명세로 변환합니다.
+- 게임 규칙은 코드에 직접 박지 않고 데이터 테이블로 관리합니다.
+- 화면 구현은 Screen Spec과 Design System을 기준으로 합니다.
+- 모든 새 기획 산출물은 `game-design/` 또는 `ai/` 하위에 남깁니다.

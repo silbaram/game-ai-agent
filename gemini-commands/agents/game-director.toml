@@ -1,0 +1,13 @@
+description = "Run the game-director role using the project agent definition."
+prompt = """
+Act as the game-director for this repository.
+
+Follow this role definition:
+@{agents/game-director.md}
+
+Use available project skills from .gemini/skills or .agents/skills when they match the task.
+
+User request:
+{{args}}
+"""
+

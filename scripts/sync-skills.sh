@@ -2,64 +2,191 @@
 #
 # sync-skills.sh
 #
-# skills/ 를 single source of truth로 두고,
-# .claude/skills/ 와 .agents/skills/ 로 복사한다.
-#
-# Claude Code와 Codex CLI가 각자의 경로에서 스킬을 찾기 때문에,
-# skills/ 만 수정하고 이 스크립트를 실행하면 양쪽이 동기화된다.
+# Game AI Harness 원본을 실제 게임 프로젝트의 AI tool 경로로 설치/동기화한다.
 #
 # 사용:
-#   bash scripts/sync-skills.sh
-#   bash scripts/sync-skills.sh --dry-run
+#   bash scripts/sync-skills.sh --target /path/to/game-project --tool all
+#   bash scripts/sync-skills.sh --target /path/to/game-project --tool claude
+#   bash scripts/sync-skills.sh --target /path/to/game-project --tool codex
+#   bash scripts/sync-skills.sh --target /path/to/game-project --tool gemini --dry-run
+#
+# 지원 tool:
+#   all      Claude Code + Codex + Gemini CLI
+#   claude   .claude/agents, .claude/skills
+#   codex    AGENTS.md, .agents/skills, .codex/agents, .codex/config.toml
+#   gemini   GEMINI.md, .gemini/skills, .gemini/commands, .agents/skills
 #
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
-SOURCE_DIR="$ROOT_DIR/skills"
-TARGETS=(
-  "$ROOT_DIR/.claude/skills"
-  "$ROOT_DIR/.agents/skills"
-)
+SOURCE_SKILLS_DIR="$ROOT_DIR/skills"
+SOURCE_AGENTS_DIR="$ROOT_DIR/agents"
+SOURCE_CODEX_AGENTS_DIR="$ROOT_DIR/codex-agents"
+SOURCE_GEMINI_COMMANDS_DIR="$ROOT_DIR/gemini-commands"
+SOURCE_CODEX_CONFIG="$ROOT_DIR/codex-config.toml"
 
+TARGET_DIR=""
+TOOL="all"
 DRY_RUN=false
-if [[ "${1:-}" == "--dry-run" ]]; then
-  DRY_RUN=true
-  echo "== DRY RUN =="
-fi
+FORCE=false
 
-if [[ ! -d "$SOURCE_DIR" ]]; then
-  echo "Error: source directory not found: $SOURCE_DIR" >&2
+usage() {
+  sed -n '2,18p' "$0" | sed 's/^# \{0,1\}//'
+}
+
+die() {
+  echo "Error: $*" >&2
+  echo "" >&2
+  usage >&2
   exit 1
+}
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --target|-t)
+      [[ $# -ge 2 ]] || die "--target requires a path"
+      TARGET_DIR="$2"
+      shift 2
+      ;;
+    --tool)
+      [[ $# -ge 2 ]] || die "--tool requires one of: all, claude, codex, gemini"
+      TOOL="$2"
+      shift 2
+      ;;
+    --dry-run|-n)
+      DRY_RUN=true
+      shift
+      ;;
+    --force)
+      FORCE=true
+      shift
+      ;;
+    --help|-h)
+      usage
+      exit 0
+      ;;
+    *)
+      die "unknown argument: $1"
+      ;;
+  esac
+done
+
+case "$TOOL" in
+  all|claude|codex|gemini) ;;
+  *) die "--tool must be one of: all, claude, codex, gemini" ;;
+esac
+
+[[ -n "$TARGET_DIR" ]] || die "--target is required"
+
+if [[ "$TARGET_DIR" != /* ]]; then
+  TARGET_DIR="$(cd "$(dirname "$TARGET_DIR")" && pwd)/$(basename "$TARGET_DIR")"
 fi
 
-# 각 skill 디렉토리를 타겟으로 복사
-for target in "${TARGETS[@]}"; do
-  echo "→ syncing to $target"
-  if $DRY_RUN; then
-    rsync -av --dry-run --delete "$SOURCE_DIR/" "$target/"
-  else
-    mkdir -p "$target"
-    # rsync가 없으면 cp로 대체
-    if command -v rsync >/dev/null 2>&1; then
-      rsync -a --delete "$SOURCE_DIR/" "$target/"
-    else
-      rm -rf "$target"
-      mkdir -p "$target"
-      cp -R "$SOURCE_DIR/." "$target/"
-    fi
-  fi
+[[ -d "$TARGET_DIR" ]] || die "target directory not found: $TARGET_DIR"
+
+if [[ "$TARGET_DIR" == "$ROOT_DIR" && "$FORCE" != true ]]; then
+  die "target is this harness repository. Pass --force if you intentionally want generated tool directories here."
+fi
+
+for required_dir in "$SOURCE_SKILLS_DIR" "$SOURCE_AGENTS_DIR" "$SOURCE_CODEX_AGENTS_DIR" "$SOURCE_GEMINI_COMMANDS_DIR"; do
+  [[ -d "$required_dir" ]] || die "source directory not found: $required_dir"
 done
 
 if $DRY_RUN; then
-  echo "(dry run complete — no files written)"
-else
-  echo "✓ sync complete"
+  echo "== DRY RUN =="
+fi
+
+echo "Source: $ROOT_DIR"
+echo "Target: $TARGET_DIR"
+echo "Tool:   $TOOL"
+echo ""
+
+sync_dir() {
+  local source="$1"
+  local target="$2"
+  echo "-> syncing $source to $target"
+  if $DRY_RUN; then
+    if command -v rsync >/dev/null 2>&1; then
+      rsync -av --dry-run --delete "$source/" "$target/"
+    else
+      echo "   dry-run requires rsync for detailed file listing"
+    fi
+    return
+  fi
+
+  mkdir -p "$target"
+  if command -v rsync >/dev/null 2>&1; then
+    rsync -a --delete "$source/" "$target/"
+  else
+    rm -rf "$target"
+    mkdir -p "$target"
+    cp -R "$source/." "$target/"
+  fi
+}
+
+copy_file() {
+  local source="$1"
+  local target="$2"
+  echo "-> copying $source to $target"
+  if $DRY_RUN; then
+    return
+  fi
+
+  mkdir -p "$(dirname "$target")"
+  cp "$source" "$target"
+}
+
+install_claude() {
+  sync_dir "$SOURCE_AGENTS_DIR" "$TARGET_DIR/.claude/agents"
+  sync_dir "$SOURCE_SKILLS_DIR" "$TARGET_DIR/.claude/skills"
+  copy_file "$ROOT_DIR/CLAUDE.md" "$TARGET_DIR/CLAUDE.md"
+}
+
+install_codex() {
+  copy_file "$ROOT_DIR/AGENTS.md" "$TARGET_DIR/AGENTS.md"
+  sync_dir "$SOURCE_SKILLS_DIR" "$TARGET_DIR/.agents/skills"
+  sync_dir "$SOURCE_CODEX_AGENTS_DIR" "$TARGET_DIR/.codex/agents"
+  if [[ -f "$SOURCE_CODEX_CONFIG" ]]; then
+    copy_file "$SOURCE_CODEX_CONFIG" "$TARGET_DIR/.codex/config.toml"
+  else
+    echo "-> writing default Codex agent config to $TARGET_DIR/.codex/config.toml"
+    if ! $DRY_RUN; then
+      mkdir -p "$TARGET_DIR/.codex"
+      printf '[agents]\nmax_threads = 6\nmax_depth = 1\n' > "$TARGET_DIR/.codex/config.toml"
+    fi
+  fi
+}
+
+install_gemini() {
+  copy_file "$ROOT_DIR/GEMINI.md" "$TARGET_DIR/GEMINI.md"
+  sync_dir "$SOURCE_SKILLS_DIR" "$TARGET_DIR/.gemini/skills"
+  sync_dir "$SOURCE_SKILLS_DIR" "$TARGET_DIR/.agents/skills"
+  sync_dir "$SOURCE_GEMINI_COMMANDS_DIR" "$TARGET_DIR/.gemini/commands"
+}
+
+case "$TOOL" in
+  all)
+    install_claude
+    install_codex
+    install_gemini
+    ;;
+  claude)
+    install_claude
+    ;;
+  codex)
+    install_codex
+    ;;
+  gemini)
+    install_gemini
+    ;;
+esac
+
+if $DRY_RUN; then
   echo ""
-  echo "Synced skills:"
-  for dir in "$SOURCE_DIR"/*/; do
-    skill_name="$(basename "$dir")"
-    echo "  - $skill_name"
-  done
+  echo "(dry run complete - no files written)"
+else
+  echo ""
+  echo "sync complete"
 fi

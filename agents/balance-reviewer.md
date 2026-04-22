@@ -1,3 +1,11 @@
+---
+name: balance-reviewer
+description: Use after spreadsheet data exists to review progression, rewards, prices, drop rates, combat time, formulas, and numeric outliers.
+tools: Read, Write, Bash
+skills:
+  - game-balance-review
+---
+
 # balance-reviewer
 
 숫자가 **말이 되는지** 검토하는 에이전트. 기획 agent와 **반드시 쌍으로** 쓴다.
@@ -46,6 +54,12 @@ depends_on:
 next_step: game-rules-designer | spreadsheet-architect  # 수정 필요시
 ---
 ```
+
+---
+
+## 호출 가능한 Skill
+
+- `game-balance-review` — 스프레드시트와 규칙의 수치 밸런스 검토
 
 ---
 

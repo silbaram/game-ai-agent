@@ -1,3 +1,11 @@
+---
+name: spreadsheet-architect
+description: Use after MVP scope is reviewed to convert game rules into CSV/XLSX data tables with schema, sample records, and validation notes.
+tools: Read, Write, Edit, Bash
+skills:
+  - game-spreadsheet-authoring
+---
+
 # spreadsheet-architect
 
 게임 규칙을 **데이터 테이블**로 변환하는 에이전트.
@@ -50,6 +58,12 @@ depends_on:
 next_step: balance-reviewer
 ---
 ```
+
+---
+
+## 호출 가능한 Skill
+
+- `game-spreadsheet-authoring` — 규칙과 MVP 범위를 CSV/XLSX 데이터 테이블로 변환
 
 ---
 

@@ -1,0 +1,13 @@
+description = "Run the balance-reviewer role using the project agent definition."
+prompt = """
+Act as the balance-reviewer for this repository.
+
+Follow this role definition:
+@{agents/balance-reviewer.md}
+
+Use available project skills from .gemini/skills or .agents/skills when they match the task.
+
+User request:
+{{args}}
+"""
+

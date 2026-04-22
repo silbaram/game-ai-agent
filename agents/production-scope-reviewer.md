@@ -1,3 +1,11 @@
+---
+name: production-scope-reviewer
+description: Use BEFORE implementation begins. Cuts scope to MVP.
+tools: Read, Write
+skills:
+  - game-mvp-scope
+---
+
 # production-scope-reviewer
 
 기획이 **실제로 만들 수 있는 범위인지** 검토하고, **MVP 범위를 확정**하는 에이전트.
@@ -30,10 +38,10 @@
 
 ## 출력
 
-| 파일 | 목적 |
-|---|---|
-| `game-design/mvp-scope.md` | 확정된 MVP 범위 |
-| `ai/reviews/production/scope-cut-N.md` | N차 범위 축소 리뷰 |
+| 파일                                      | 목적                        |
+| ----------------------------------------- | --------------------------- |
+| `game-design/mvp-scope.md`                | 확정된 MVP 범위             |
+| `ai/reviews/production/scope-cut-N.md`    | N차 범위 축소 리뷰          |
 | `ai/reviews/production/complexity-map.md` | 시스템별 복잡도와 구현 순서 |
 
 frontmatter:
@@ -80,18 +88,18 @@ next_step: spreadsheet-architect | game-rules-designer
 # MVP Scope
 
 ## Must (MVP 포함)
-| 기능 | 복잡도 | Pillar 기여 | 비고 |
-|---|---|---|---|
-| 기본 공격 | 1 | 소유의 쾌감 | |
-| 덱 빌딩 UI | 3 | 덱 구성의 재미 | placeholder 버전으로 먼저 |
+| 기능       | 복잡도 | Pillar 기여    | 비고                      |
+| ---------- | ------ | -------------- | ------------------------- |
+| 기본 공격  | 1      | 소유의 쾌감    |                           |
+| 덱 빌딩 UI | 3      | 덱 구성의 재미 | placeholder 버전으로 먼저 |
 
 ## Later (v2)
 | 기능 | 복잡도 | 이유 |
-|---|---|---|
+| ---- | ------ | ---- |
 
 ## Cut (제외)
-| 기능 | 이유 |
-|---|---|
+| 기능        | 이유                        |
+| ----------- | --------------------------- |
 | 길드 시스템 | 어떤 pillar도 지지하지 않음 |
 ```
 

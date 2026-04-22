@@ -1,6 +1,6 @@
 ---
 name: game-system-spec
-description: Use to convert a game system's rules into a formal development spec — with user flows, data models, UI screens, edge cases, and test cases. Triggered after rule design is complete and before implementation begins. Produces system-level spec documents that developers can implement directly.
+description: Use to convert an MVP-approved game system's rules into a formal development spec with user flows, data models, UI screens, edge cases, and test cases. Triggered after MVP scope and balance review, before UI planning or implementation.
 ---
 
 # Game System Spec Skill
@@ -15,7 +15,7 @@ description: Use to convert a game system's rules into a formal development spec
 
 ## 언제 쓰는가
 
-- 특정 시스템의 규칙이 확정된 후
+- 특정 시스템이 MVP Must로 확정된 후
 - 개발자가 구현에 들어가기 직전
 - 기존 시스템을 큰 폭으로 리팩토링할 때
 
@@ -72,7 +72,7 @@ description: Use to convert a game system's rules into a formal development spec
 produced_by: game-rules-designer
 depends_on:
   - game-design/rules/<s>-rules.md
-next_step: implementation
+next_step: ui-planner | game-ui-implementation
 ---
 
 # <System Name> System Spec

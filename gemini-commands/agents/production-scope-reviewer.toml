@@ -1,0 +1,13 @@
+description = "Run the production-scope-reviewer role using the project agent definition."
+prompt = """
+Act as the production-scope-reviewer for this repository.
+
+Follow this role definition:
+@{agents/production-scope-reviewer.md}
+
+Use available project skills from .gemini/skills or .agents/skills when they match the task.
+
+User request:
+{{args}}
+"""
+
