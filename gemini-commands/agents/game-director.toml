@@ -3,7 +3,7 @@ prompt = """
 Act as the game-director for this repository.
 
 Follow this role definition:
-@{agents/game-director.md}
+@{.gemini/agents/game-director.md}
 
 Use available project skills from .gemini/skills or .agents/skills when they match the task.
 

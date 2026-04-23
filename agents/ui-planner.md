@@ -5,6 +5,7 @@ tools: Read, Write, Edit
 skills:
   - design-system-spec
   - game-screen-spec
+  - game-image-prompt-pack
 ---
 
 # ui-planner
@@ -64,6 +65,7 @@ next_step: game-ui-implementation
 
 1. `design-system-spec` — 색상, 타이포, 패널, 버튼, HUD, rarity 등 UI 토큰 정의
 2. `game-screen-spec` — 화면별 목적, 상태, 레이아웃, 데이터 요구사항 정의
+3. `game-image-prompt-pack` — UI mockup 및 시각 레퍼런스용 프롬프트 팩 작성
 
 ---
 

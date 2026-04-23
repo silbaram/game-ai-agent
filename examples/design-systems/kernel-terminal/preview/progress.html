@@ -1,0 +1,18 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+html, body { margin: 0; padding: 0; background: var(--bg-0); }
+.card { box-sizing: border-box; width: 700px; padding: 20px; background: var(--bg-0); color: var(--fg-1); font-family: var(--font-mono); }
+.label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--fg-3); margin-bottom: 12px; }
+</style>
+</head><body><div class="card">
+<div class="label">progress · text-mode bars</div>
+<div style="display:flex; flex-direction:column; gap:8px; font-size:13px; line-height:1.5;">
+  <div><span style="color:var(--fg-2);">downloading </span><span style="color:var(--k-green);">[████████████░░░░░░░░]</span><span style="color:var(--fg-2);"> 62%</span> <span style="color:var(--fg-3); margin-left:8px;">12.4MB/20MB</span></div>
+  <div><span style="color:var(--fg-2);">compiling   </span><span style="color:var(--k-green);">[████████████████████]</span><span style="color:var(--k-green);"> ok</span> <span style="color:var(--fg-3); margin-left:8px;">3.2s</span></div>
+  <div><span style="color:var(--fg-2);">uploading   </span><span style="color:var(--k-amber);">[██████░░░░░░░░░░░░░░]</span><span style="color:var(--fg-2);"> 31%</span> <span style="color:var(--fg-3); margin-left:8px;">stalled</span></div>
+  <div><span style="color:var(--fg-2);">testing     </span><span style="color:var(--fg-3);">[░░░░░░░░░░░░░░░░░░░░]</span><span style="color:var(--fg-3);"> queued</span></div>
+  <div style="margin-top:6px; color:var(--fg-3); font-size:11px;">spinner: <span style="color:var(--k-green)">⠋ ⠙ ⠹ ⠸ ⠼ ⠴ ⠦ ⠧ ⠇ ⠏</span></div>
+</div>
+</div></body></html>

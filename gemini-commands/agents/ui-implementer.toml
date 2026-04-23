@@ -1,0 +1,13 @@
+description = "Run the ui-implementer role using the project agent definition."
+
+prompt = """
+Act as the ui-implementer for this repository.
+
+Follow this role definition:
+@{.gemini/agents/ui-implementer.md}
+
+Use available project skills from .gemini/skills or .agents/skills when they match the task.
+
+User request:
+{{args}}
+"""
