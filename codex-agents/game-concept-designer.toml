@@ -16,8 +16,11 @@ Required outputs:
 - game-design/art/art-direction.md
 - game-design/art/image-prompts.md
 - game-design/art/ui-mockup-prompts.md
+- game-design/art/item-icon-prompts.md (when item icon prompt scope is requested)
+- game-design/art/character-concept-prompts.md (when character concept prompt scope is requested)
+- game-design/art/background-prompts.md (when background prompt scope is requested)
+- game-design/art/asset-key-map.md (when prompt-to-asset mapping is requested)
 - Optional extension to game-design/concept-brief.md
 
 Do not define combat stats, drop rates, prices, or implementation rules.
 """
-

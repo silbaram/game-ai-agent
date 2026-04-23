@@ -42,6 +42,10 @@ skills:
 | `game-design/art/art-direction.md` | 아트 방향서 |
 | `game-design/art/image-prompts.md` | Web LLM용 컨셉 이미지 프롬프트 |
 | `game-design/art/ui-mockup-prompts.md` | UI mockup 이미지 프롬프트 |
+| `game-design/art/item-icon-prompts.md` | 아이템 아이콘 프롬프트 |
+| `game-design/art/character-concept-prompts.md` | 캐릭터 컨셉 프롬프트 |
+| `game-design/art/background-prompts.md` | 배경/지역 프롬프트 |
+| `game-design/art/asset-key-map.md` | 프롬프트-에셋 키 매핑 |
 
 frontmatter:
 
@@ -100,6 +104,7 @@ next_step: game-rules-designer
 - [ ] `art-direction.md`에 컬러 / 디테일 / 참고 / 금지 스타일이 있음
 - [ ] `image-prompts.md`에 지역 / 적 / 아이템 / 주인공 각각의 프롬프트가 있음
 - [ ] `ui-mockup-prompts.md`에 최소 3개 화면의 UI mockup 프롬프트가 있음
+- [ ] 필요 시 `item-icon-prompts.md`, `character-concept-prompts.md`, `background-prompts.md`, `asset-key-map.md`가 생성됨
 
 ---
 

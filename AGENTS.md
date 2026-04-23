@@ -53,6 +53,10 @@ game-design/
     art-direction.md
     image-prompts.md
     ui-mockup-prompts.md
+    item-icon-prompts.md
+    character-concept-prompts.md
+    background-prompts.md
+    asset-key-map.md
 
 ai/
   specs/                       # agent가 생성한 명세
@@ -74,7 +78,7 @@ agent가 새 기획 산출물을 만들 때는 **반드시 위 경로 규약을 
 | Agent | 역할 | 출력 위치 |
 |---|---|---|
 | `game-director` | 전체 방향, pillars, core loop, 시스템 목록 | `game-design/game-pillars.md`, `game-design/core-loop.md`, `game-design/system-overview.md` |
-| `game-concept-designer` | 세계관, 분위기, 아트 방향, 플레이어 판타지 | `game-design/concept-brief.md`, `game-design/art/art-direction.md` |
+| `game-concept-designer` | 세계관, 분위기, 아트 방향, 플레이어 판타지 | `game-design/concept-brief.md`, `game-design/art/*.md` |
 | `game-rules-designer` | 전투/아이템/스킬/성장/보상/드랍/상점/퀘스트 규칙 | `game-design/rules/*.md` |
 | `spreadsheet-architect` | 규칙을 데이터 테이블로 변환 | `game-design/spreadsheets/*.xlsx`, `*.csv` |
 | `balance-reviewer` | 성장곡선, 보상량, 드랍률, 가격, 이상치 검토 | `ai/reviews/balance/*.md` |
