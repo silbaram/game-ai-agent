@@ -12,9 +12,9 @@
 #
 # 지원 tool:
 #   all      Claude Code + Codex + Gemini CLI
-#   claude   .claude/agents, .claude/skills
+#   claude   AGENTS.md, .claude/agents, .claude/skills
 #   codex    AGENTS.md, .agents/skills, .codex/agents, .codex/config.toml
-#   gemini   GEMINI.md, .gemini/skills, .agents/skills, .gemini/agents, .gemini/commands
+#   gemini   AGENTS.md, GEMINI.md, .gemini/skills, .agents/skills, .gemini/agents, .gemini/commands
 #
 set -euo pipefail
 
@@ -139,6 +139,7 @@ copy_file() {
 }
 
 install_claude() {
+  copy_file "$ROOT_DIR/AGENTS.md" "$TARGET_DIR/AGENTS.md"
   sync_dir "$SOURCE_AGENTS_DIR" "$TARGET_DIR/.claude/agents"
   sync_dir "$SOURCE_SKILLS_DIR" "$TARGET_DIR/.claude/skills"
   copy_file "$ROOT_DIR/CLAUDE.md" "$TARGET_DIR/CLAUDE.md"
@@ -160,6 +161,7 @@ install_codex() {
 }
 
 install_gemini() {
+  copy_file "$ROOT_DIR/AGENTS.md" "$TARGET_DIR/AGENTS.md"
   copy_file "$ROOT_DIR/GEMINI.md" "$TARGET_DIR/GEMINI.md"
 
   # Gemini CLI workspace skills
