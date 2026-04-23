@@ -25,7 +25,7 @@ Gemini CLI는 Claude Code의 subagent와 정확히 1:1로 대응되는 개념이
 > /agents:game-director 장르=roguelike deckbuilder, 플랫폼=web, 핵심 재미=덱 빌딩 + 영구 성장
 ```
 
-custom command 원본은 하네스의 `gemini-commands/agents/*.toml`이고, 동기화 후 대상 프로젝트의 `.gemini/commands/agents/*.toml`에 생성된다.
+custom command 원본은 하네스의 `agent-harness/gemini-commands/agents/*.toml`이고, 동기화 후 대상 프로젝트의 `.gemini/commands/agents/*.toml`에 생성된다.
 각 command는 `.gemini/agents/*.md` 역할 정의를 `@{...}` 파일 주입으로 읽는다.
 
 ---
@@ -38,7 +38,7 @@ custom command 원본은 하네스의 `gemini-commands/agents/*.toml`이고, 동
 
 ## 4. 동기화
 
-하네스 루트의 `skills/`, `agents/`, `gemini-commands/`가 원본이다. Gemini용 skill, agent, command 복사본은 대상 게임 프로젝트를 지정해서 갱신한다.
+하네스 루트의 `agent-harness/skills/`, `agent-harness/agents/`, `agent-harness/gemini-commands/`가 원본이다. Gemini용 skill, agent, command 복사본은 대상 게임 프로젝트를 지정해서 갱신한다.
 
 ```bash
 bash scripts/sync-skills.sh --target /path/to/game-project --tool gemini
@@ -47,10 +47,10 @@ bash scripts/sync-skills.sh --target /path/to/game-project --tool gemini
 동기화 대상:
 
 ```text
-skills/           -> <target>/.gemini/skills/
-skills/           -> <target>/.agents/skills/
-agents/           -> <target>/.gemini/agents/
-gemini-commands/  -> <target>/.gemini/commands/
+agent-harness/skills/           -> <target>/.gemini/skills/
+agent-harness/skills/           -> <target>/.agents/skills/
+agent-harness/agents/           -> <target>/.gemini/agents/
+agent-harness/gemini-commands/  -> <target>/.gemini/commands/
 ```
 
 ---

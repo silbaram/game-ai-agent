@@ -21,11 +21,12 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
-SOURCE_SKILLS_DIR="$ROOT_DIR/skills"
-SOURCE_AGENTS_DIR="$ROOT_DIR/agents"
-SOURCE_CODEX_AGENTS_DIR="$ROOT_DIR/codex-agents"
-SOURCE_GEMINI_COMMANDS_DIR="$ROOT_DIR/gemini-commands"
-SOURCE_CODEX_CONFIG="$ROOT_DIR/codex-config.toml"
+HARNESS_DIR="$ROOT_DIR/agent-harness"
+SOURCE_SKILLS_DIR="$HARNESS_DIR/skills"
+SOURCE_AGENTS_DIR="$HARNESS_DIR/agents"
+SOURCE_CODEX_AGENTS_DIR="$HARNESS_DIR/codex-agents"
+SOURCE_GEMINI_COMMANDS_DIR="$HARNESS_DIR/gemini-commands"
+SOURCE_CODEX_CONFIG="$HARNESS_DIR/codex-config.toml"
 
 TARGET_DIR=""
 TOOL="all"
@@ -131,6 +132,11 @@ copy_file() {
   local target="$2"
   echo "-> copying $source to $target"
   if $DRY_RUN; then
+    return
+  fi
+
+  if [[ "$source" == "$target" ]]; then
+    echo "   source and target are identical; skipping"
     return
   fi
 

@@ -91,7 +91,7 @@ agent가 새 기획 산출물을 만들 때는 **반드시 위 경로 규약을 
 
 플랫폼별 실행 형식은 `scripts/sync-skills.sh`가 대상 게임 프로젝트에 생성한다:
 - Claude Code subagent: `<target>/.claude/agents/*.md`
-- Codex custom agent: `<target>/.codex/agents/*.toml`
+- Codex custom agent: `<target>/.codex/agents/*.toml` (`[[skills.config]]`로 관련 `.agents/skills/<skill>` 경로 활성화)
 - Gemini CLI role command: `<target>/.gemini/commands/agents/*.toml`
 
 Gemini CLI는 Claude/Codex와 같은 subagent manifest를 쓰지 않는다. 이 프로젝트에서는 공식 custom command로 `.gemini/agents/*.md` 역할 정의를 주입한다.
@@ -115,16 +115,16 @@ Gemini CLI는 Claude/Codex와 같은 subagent manifest를 쓰지 않는다. 이 
 | `game-ui-implementation` | `ui-implementer` | 화면 명세와 디자인 시스템을 실제 UI로 구현 |
 | `game-browser-preview-review` | `browser-preview-reviewer` | 브라우저 preview에서 화면 상태와 반응형 검토 |
 
-스킬의 실제 내용은 `skills/<skill-name>/SKILL.md`에 있다.
+스킬의 실제 내용은 `agent-harness/skills/<skill-name>/SKILL.md`에 있다.
 플랫폼별 복사본은 대상 프로젝트의 `.claude/skills/`, `.agents/skills/`, `.gemini/skills/`에 자동 동기화된다.
-Claude Code용 agent 복사본은 대상 프로젝트의 `.claude/agents/`에, Codex용 TOML agent 복사본은 `.codex/agents/`에 자동 동기화된다.
+Claude Code용 agent 복사본은 대상 프로젝트의 `.claude/agents/`에, Codex용 TOML agent 복사본은 `.codex/agents/`에 자동 동기화된다. Codex agent TOML에는 관련 skill을 `[[skills.config]]`로 명시한다.
 Gemini용 agent 역할 정의 복사본은 `.gemini/agents/`에, Gemini role command 복사본은 `.gemini/commands/`에 자동 동기화된다.
 
 ```bash
 bash scripts/sync-skills.sh --target /path/to/game-project --tool all
 ```
 
-이 하네스 저장소의 `.claude/`, `.agents/`, `.codex/`, `.gemini/`는 생성물이므로 원본으로 편집하지 않는다.
+이 하네스 저장소의 agent/skill 원본은 `agent-harness/` 아래에 모아 둔다. `.claude/`, `.agents/`, `.codex/`, `.gemini/`는 대상 프로젝트용 생성물이므로 원본으로 편집하지 않는다.
 
 ---
 

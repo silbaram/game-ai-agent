@@ -103,7 +103,7 @@ Agent + Skill 방식은 다음 장점이 있습니다.
 | `ui-implementer` | Screen Spec/Design System 기반 실제 UI 구현 | `src/*`, `components/*`, `screens/*`, `tests/*` |
 | `browser-preview-reviewer` | 브라우저 preview 상태/반응형 검토 | `ai/reviews/visual/*.md` |
 
-Agent 역할 정의 원본은 `agents/*.md`에 있습니다. 플랫폼별 실행 형식은 `scripts/sync-skills.sh`가 대상 게임 프로젝트에 생성합니다.
+Agent 역할 정의 원본은 `agent-harness/agents/*.md`에 있습니다. 플랫폼별 실행 형식은 `scripts/sync-skills.sh`가 대상 게임 프로젝트에 생성합니다.
 
 - Claude Code: `<target>/.claude/agents/*.md`
 - Codex: `<target>/.codex/agents/*.toml`
@@ -130,7 +130,7 @@ Gemini CLI에는 Claude/Codex와 같은 1:1 subagent 파일 형식이 없으므�
 | `game-ui-implementation` | `ui-implementer` | 화면 명세와 디자인 시스템 기준으로 실제 UI 구현 |
 | `game-browser-preview-review` | `browser-preview-reviewer` | 브라우저 preview에서 상태와 반응형 검토 |
 
-Skill 정의는 `skills/<skill-name>/SKILL.md`에 있습니다.
+Skill 정의는 `agent-harness/skills/<skill-name>/SKILL.md`에 있습니다.
 
 ---
 
@@ -142,7 +142,7 @@ Skill 정의는 `skills/<skill-name>/SKILL.md`에 있습니다.
 | Claude Code | Project skills | `.claude/skills/<skill>/SKILL.md` |
 | Codex | AGENTS.md project instructions | `AGENTS.md` |
 | Codex | Repository skills | `.agents/skills/<skill>/SKILL.md` |
-| Codex | Project custom agents | `.codex/agents/*.toml` |
+| Codex | Project custom agents | `.codex/agents/*.toml` (`[[skills.config]]`로 관련 skill 활성화) |
 | Gemini CLI | Context file | `GEMINI.md` |
 | Gemini CLI | Workspace skills | `.gemini/skills/<skill>/SKILL.md`, `.agents/skills/<skill>/SKILL.md` |
 | Gemini CLI | Project role definitions | `.gemini/agents/*.md` |
@@ -172,30 +172,19 @@ game-ai-agent/
   GEMINI.md
   README.md
 
-  agents/
-    game-director.md
-    game-concept-designer.md
-    game-rules-designer.md
-    production-scope-reviewer.md
-    spreadsheet-architect.md
-    balance-reviewer.md
-    ui-planner.md
-    ui-implementer.md
-    browser-preview-reviewer.md
-
-  codex-agents/
-    game-director.toml
-    game-concept-designer.toml
-    game-rules-designer.toml
-    production-scope-reviewer.toml
-    spreadsheet-architect.toml
-    balance-reviewer.toml
-    ui-planner.toml
-    ui-implementer.toml
-    browser-preview-reviewer.toml
-
-  gemini-commands/
+  agent-harness/
     agents/
+      game-director.md
+      game-concept-designer.md
+      game-rules-designer.md
+      production-scope-reviewer.md
+      spreadsheet-architect.md
+      balance-reviewer.md
+      ui-planner.md
+      ui-implementer.md
+      browser-preview-reviewer.md
+
+    codex-agents/
       game-director.toml
       game-concept-designer.toml
       game-rules-designer.toml
@@ -206,26 +195,38 @@ game-ai-agent/
       ui-implementer.toml
       browser-preview-reviewer.toml
 
-  skills/
-    game-concept-brief/
-    game-core-loop-design/
-    game-rule-design/
-    game-mvp-scope/
-    game-spreadsheet-authoring/
-    game-balance-review/
-    game-system-spec/
-    design-system-spec/
-    game-screen-spec/
-    game-image-prompt-pack/
-    game-ui-implementation/
-    game-browser-preview-review/
+    gemini-commands/
+      agents/
+        game-director.toml
+        game-concept-designer.toml
+        game-rules-designer.toml
+        production-scope-reviewer.toml
+        spreadsheet-architect.toml
+        balance-reviewer.toml
+        ui-planner.toml
+        ui-implementer.toml
+        browser-preview-reviewer.toml
+
+    skills/
+      game-concept-brief/
+      game-core-loop-design/
+      game-rule-design/
+      game-mvp-scope/
+      game-spreadsheet-authoring/
+      game-balance-review/
+      game-system-spec/
+      design-system-spec/
+      game-screen-spec/
+      game-image-prompt-pack/
+      game-ui-implementation/
+      game-browser-preview-review/
+
+    codex-config.toml
 
   examples/
     README.md
     design-systems/
       kernel-terminal/
-
-  codex-config.toml
 
   scripts/
     sync-skills.sh
@@ -317,23 +318,23 @@ bash scripts/sync-skills.sh --target /path/to/game-project --tool codex
 bash scripts/sync-skills.sh --target /path/to/game-project --tool gemini
 ```
 
-`skills/`, `agents/`, `codex-agents/`, `codex-config.toml`, `gemini-commands/`가 source입니다. 이 스크립트는 대상 프로젝트에 다음 공식 런타임 경로를 생성합니다.
+`agent-harness/skills/`, `agent-harness/agents/`, `agent-harness/codex-agents/`, `agent-harness/codex-config.toml`, `agent-harness/gemini-commands/`가 source입니다. Codex agent TOML은 관련 skill을 `[[skills.config]]`로 가리키며, 이 스크립트는 대상 프로젝트에 다음 공식 런타임 경로를 생성합니다.
 
 ```text
 AGENTS.md         -> <target>/AGENTS.md
 CLAUDE.md         -> <target>/CLAUDE.md
 GEMINI.md         -> <target>/GEMINI.md
-skills/           -> <target>/.claude/skills/
-skills/           -> <target>/.agents/skills/
-skills/           -> <target>/.gemini/skills/
-agents/           -> <target>/.claude/agents/
-agents/           -> <target>/.gemini/agents/
-codex-agents/     -> <target>/.codex/agents/
-codex-config.toml -> <target>/.codex/config.toml
-gemini-commands/  -> <target>/.gemini/commands/
+agent-harness/skills/           -> <target>/.claude/skills/
+agent-harness/skills/           -> <target>/.agents/skills/
+agent-harness/skills/           -> <target>/.gemini/skills/
+agent-harness/agents/           -> <target>/.claude/agents/
+agent-harness/agents/           -> <target>/.gemini/agents/
+agent-harness/codex-agents/     -> <target>/.codex/agents/
+agent-harness/codex-config.toml -> <target>/.codex/config.toml
+agent-harness/gemini-commands/  -> <target>/.gemini/commands/
 ```
 
-하네스 저장소 안의 `.claude/`, `.agents/`, `.codex/`, `.gemini/`는 생성물입니다. 원본을 고칠 때는 숨김 디렉토리가 아니라 위 source 디렉토리를 수정합니다.
+하네스 저장소 안의 `.claude/`, `.agents/`, `.codex/`, `.gemini/`는 생성물입니다. 원본을 고칠 때는 숨김 디렉토리가 아니라 `agent-harness/` 아래 source 디렉토리를 수정합니다.
 
 ---
 

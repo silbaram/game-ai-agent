@@ -96,7 +96,7 @@ Skill은 progressive disclosure 방식으로 로드된다:
 
 ## 5. 동기화
 
-하네스 루트의 `agents/`와 `skills/`가 원본이다. Claude Code용 복사본은 대상 게임 프로젝트를 지정해서 갱신한다.
+하네스 루트의 `agent-harness/agents/`와 `agent-harness/skills/`가 원본이다. Claude Code용 복사본은 대상 게임 프로젝트를 지정해서 갱신한다.
 
 ```bash
 bash scripts/sync-skills.sh --target /path/to/game-project --tool claude
