@@ -228,6 +228,9 @@ game-ai-agent/
     design-systems/
       kernel-terminal/
 
+  prompts/
+    start-game-director.md
+
   scripts/
     sync-skills.sh
 ```
@@ -338,28 +341,51 @@ agent-harness/gemini-commands/  -> <target>/.gemini/commands/
 
 ---
 
-## 사용자 사용 흐름
+## Game AI 하네스로 개발 시작하기
 
-이 섹션은 사용자가 실제 게임 프로젝트에서 어떤 순서로 AI tool에 요청하는지 설명합니다.
+이 절차는 “새 게임 프로젝트에서 AI agent로 기획 뼈대를 만들고, 구현까지 이어가는 방법”을 처음부터 설명합니다.
 
-핵심 규칙:
+### 0. 먼저 결정할 것
 
-- 최소 입력만 적으면 agent가 자동으로 실행되지 않습니다.
-- 첫 요청에는 반드시 `game-director`를 호출한다고 명시합니다.
-- `game-design/initial-input.md`는 선택 파일입니다. 만들었다면 첫 요청에서 이 파일을 읽으라고 지시해야 합니다.
+시작 전에 아래 4가지만 정하면 됩니다. 나머지는 `game-director`가 문서화하면서 정리합니다.
 
-### 1. 하네스 저장소에서 대상 프로젝트로 설치
+| 항목 | 예시 |
+|---|---|
+| 장르 | 로그라이크 덱빌더, 방치형 RPG, 퍼즐 어드벤처 |
+| 플랫폼 | web, mobile, PC |
+| 핵심 재미 | 매 런마다 다른 덱을 짜는 재미, 클릭할수록 보상이 쌓이는 재미 |
+| 타겟 플레이어 | 코어 게이머 30~60분 세션, 출퇴근 중 5분 캐주얼 유저 |
 
-하네스 저장소에서 실제 게임 프로젝트 경로를 대상으로 동기화합니다.
+바로 복사해서 쓸 프롬프트는 [prompts/start-game-director.md](prompts/start-game-director.md)에 있습니다.
+
+### 1. 대상 게임 프로젝트 준비
+
+하네스 저장소와 실제 게임 프로젝트는 분리해서 쓰는 것을 권장합니다.
+
+```text
+/path/to/game-ai-agent     # 이 하네스 저장소
+/path/to/game-project      # 실제 게임 개발 프로젝트
+```
+
+대상 게임 프로젝트가 없다면 먼저 만듭니다.
 
 ```bash
+mkdir -p /path/to/game-project
+```
+
+### 2. 하네스를 대상 프로젝트에 설치
+
+하네스 저장소 루트에서 실행합니다.
+
+```bash
+cd /path/to/game-ai-agent
 bash scripts/sync-skills.sh --target /path/to/game-project --tool all
 ```
 
-결과적으로 대상 프로젝트에 AI tool별 실행 파일이 생성됩니다.
+설치 후 대상 프로젝트에는 AI tool별 실행 파일이 생깁니다.
 
 ```text
-/path/to/game-project/
+game-project/
   AGENTS.md
   CLAUDE.md
   GEMINI.md
@@ -369,94 +395,58 @@ bash scripts/sync-skills.sh --target /path/to/game-project --tool all
   .gemini/
 ```
 
-### 2. 대상 게임 프로젝트에서 AI tool 실행
+특정 도구만 쓴다면 `--tool claude`, `--tool codex`, `--tool gemini` 중 하나를 사용합니다.
 
-AI tool은 **대상 게임 프로젝트 루트**에서 실행합니다.
+### 3. 대상 프로젝트 루트에서 AI tool 실행
+
+AI tool은 반드시 대상 게임 프로젝트 루트에서 실행합니다.
 
 ```bash
 cd /path/to/game-project
 ```
 
-이후 사용하는 도구를 엽니다.
+그 다음 사용하는 도구를 엽니다.
 
 ```text
-Claude Code / Codex / Gemini CLI
+Claude Code / Codex CLI / Gemini CLI
 ```
 
-### 3. 첫 프롬프트에서 `game-director` 호출
+### 4. 첫 요청은 반드시 `game-director`
 
-사용자는 AI tool에 최소 입력을 그냥 던지는 것이 아니라, `game-director`에게 이 입력으로 시작하라고 요청합니다.
+최소 입력만 던지면 agent가 자동으로 이어지지 않습니다. 첫 요청에는 `game-director`를 사용한다고 명시합니다.
 
-Claude Code 예:
+가장 쉬운 시작 프롬프트:
 
 ```text
-Use game-director.
+game-director를 사용해서 게임 뼈대 문서를 만들어줘.
 
 입력:
-장르: roguelike deckbuilder
-플랫폼: web
-핵심 재미: 덱 빌딩 + 영구 성장
-원하는 분위기: 다크 판타지
-참고 게임: Slay the Spire, Inscryption
-피하고 싶은 요소: 과도한 실시간 조작, 복잡한 3D 전투
-개발 제약: 2주 안에 MVP, 브라우저 플레이 가능
+- 장르: 로그라이크 덱빌더
+- 플랫폼: web
+- 핵심 재미: 매 런마다 다른 덱을 짜고, 실패해도 다음 런이 기대되는 성장감
+- 타겟 플레이어: 코어 게이머, 1회 30~60분
+- 분위기/톤: 어두운 판타지
+- 참고 게임: Slay the Spire, Inscryption
+- 피하고 싶은 요소: 실시간 전투, 과금 유도, 복잡한 3D 조작
 
-game-concept-brief와 game-core-loop-design skill을 사용해서
-아래 파일을 작성해.
-
+반드시 아래 파일로 저장해줘:
 - game-design/concept-brief.md
 - game-design/game-pillars.md
 - game-design/core-loop.md
 - game-design/system-overview.md
+
+각 파일에는 produced_by, depends_on, next_step frontmatter를 넣어줘.
 ```
 
-Codex 예:
+도구별로 굳이 다르게 외울 필요는 없습니다. 다만 Gemini CLI에서는 custom command를 쓰고 싶으면 아래처럼 시작할 수 있습니다.
 
 ```text
-Spawn the game-director custom agent.
-
-입력:
-장르: roguelike deckbuilder
-플랫폼: web
-핵심 재미: 덱 빌딩 + 영구 성장
-원하는 분위기: 다크 판타지
-참고 게임: Slay the Spire, Inscryption
-피하고 싶은 요소: 과도한 실시간 조작, 복잡한 3D 전투
-개발 제약: 2주 안에 MVP, 브라우저 플레이 가능
-
-game-concept-brief와 game-core-loop-design skill을 사용해서
-game-design/ 하위 기획 초안 파일을 작성해.
+/agents:game-director 장르=로그라이크 덱빌더, 플랫폼=web, 핵심 재미=덱 빌딩 + 영구 성장
 ```
 
-Gemini CLI 예:
+### 5. 첫 산출물 확인
 
-```text
-/agents:game-director 장르=roguelike deckbuilder, 플랫폼=web, 핵심 재미=덱 빌딩 + 영구 성장, 분위기=다크 판타지, 참고=Slay the Spire/Inscryption, 피하고 싶은 요소=과도한 실시간 조작/복잡한 3D 전투, 개발 제약=2주 안에 MVP/브라우저 플레이 가능
-```
-
-### 4. 선택 사항: `initial-input.md`로 시작 입력 저장
-
-반복 작업을 할 프로젝트라면 최소 입력을 파일로 남겨도 됩니다.
-
-```text
-game-design/initial-input.md
-```
-
-이 파일은 자동으로 읽히지 않습니다. 첫 프롬프트에서 agent에게 읽으라고 지시해야 합니다.
-
-```text
-Use game-director.
-
-game-design/initial-input.md를 읽고,
-game-concept-brief와 game-core-loop-design skill을 사용해서
-game-design/ 하위 기획 초안 파일을 작성해.
-```
-
-`initial-input.md`는 시작용 seed입니다. 이후 기준 문서는 `concept-brief.md`, `core-loop.md`, `mvp-scope.md`, `rules/*.md`로 넘어갑니다.
-
-### 5. 생성된 기획 초안 확인
-
-첫 요청이 끝나면 사용자는 아래 파일이 생겼는지 확인합니다.
+`game-director`가 끝나면 아래 파일이 생겼는지 확인합니다.
 
 ```text
 game-design/concept-brief.md
@@ -465,125 +455,103 @@ game-design/core-loop.md
 game-design/system-overview.md
 ```
 
-부족하면 같은 `game-director`에게 보완을 요청합니다. 다음 단계로 넘어가기 전에 핵심 재미, 타겟 플레이어, core loop, 주요 시스템이 문서에 있어야 합니다.
+확인 기준:
 
-### 6. 다음 agent를 순서대로 호출
+- `concept-brief.md`에 한 줄 피치, 장르, 플랫폼, 타겟 플레이어가 있는가
+- `game-pillars.md`에 3~5개 핵심 기둥이 있는가
+- `core-loop.md`에 30초 / 5분 / 1일 또는 장기 루프가 있는가
+- `system-overview.md`에 Core / Supporting / Optional 시스템 분류가 있는가
 
-이후부터는 사용자가 다음 agent를 명시적으로 호출합니다. agent끼리 자동으로 이어서 실행된다고 가정하지 않습니다.
+부족하면 다음 단계로 가지 말고 같은 `game-director`에게 보완을 요청합니다.
 
-| 사용자 요청 | 동작 agent | 주요 skill | 결과 |
+### 6. 이후 agent를 순서대로 호출
+
+agent끼리 자동으로 다음 agent를 호출하지 않습니다. 사람이 다음 단계를 명시합니다.
+
+| 순서 | 요청 | Agent | 주요 결과 |
 |---|---|---|---|
-| 세계관과 아트 방향을 정리해 | `game-concept-designer` | `game-concept-brief` 참조 | `game-design/art/*.md` |
-| 전투/아이템/성장 규칙을 설계해 | `game-rules-designer` | `game-rule-design` | `game-design/rules/*.md` |
-| MVP 범위를 줄여 | `production-scope-reviewer` | `game-mvp-scope` | `game-design/mvp-scope.md`, `ai/reviews/production/*.md` |
-| 규칙을 데이터 테이블로 바꿔 | `spreadsheet-architect` | `game-spreadsheet-authoring` | `game-design/spreadsheets/*` |
-| 숫자와 보상을 검토해 | `balance-reviewer` | `game-balance-review` | `ai/reviews/balance/*.md` |
-| 시스템 개발 명세로 바꿔 | `game-rules-designer` | `game-system-spec` | `game-design/systems/*.md` |
-| 화면 구조와 디자인 시스템을 작성해 | `ui-planner` | `design-system-spec`, `game-screen-spec`, `game-image-prompt-pack` | `ai/specs/ui/*.md`, `game-design/art/*-prompts.md` |
-| UI를 실제로 구현해 | `ui-implementer` | `game-ui-implementation` | `src/*`, `components/*`, `screens/*`, `tests/*` |
-| 브라우저 preview를 검토해 | `browser-preview-reviewer` | `game-browser-preview-review` | `ai/reviews/visual/*.md` |
+| 1 | 게임 뼈대 문서 생성 | `game-director` | `game-design/concept-brief.md`, `game-design/core-loop.md` |
+| 2 | 세계관과 아트 방향 정리 | `game-concept-designer` | `game-design/art/*.md` |
+| 3 | 전투/아이템/성장 규칙 설계 | `game-rules-designer` | `game-design/rules/*.md` |
+| 4 | MVP 범위 축소 | `production-scope-reviewer` | `game-design/mvp-scope.md` |
+| 5 | 규칙을 데이터 테이블로 변환 | `spreadsheet-architect` | `game-design/spreadsheets/*` |
+| 6 | 숫자와 보상 검토 | `balance-reviewer` | `ai/reviews/balance/*.md` |
+| 7 | MVP 시스템 개발 명세 확정 | `game-rules-designer` | `game-design/systems/*.md` |
+| 8 | UI 디자인 시스템과 화면 명세 작성 | `ui-planner` | `ai/specs/ui/*.md` |
+| 9 | 실제 UI 구현 | `ui-implementer` | `src/*`, `components/*`, `screens/*`, `tests/*` |
+| 10 | 브라우저 preview 검토 | `browser-preview-reviewer` | `ai/reviews/visual/*.md` |
 
-예:
+가장 중요한 규칙:
+
+- `game-rules-designer` 이후에는 반드시 `production-scope-reviewer`를 거칩니다.
+- MVP 범위 검토 없이 스프레드시트, 시스템 명세, 구현에 들어가지 않습니다.
+- UI 구현은 `ai/specs/ui/design-system.md`와 화면별 `*-screen.md`가 생긴 뒤에만 합니다.
+
+### 7. 다음 단계 요청 예시
+
+MVP 범위를 줄일 때:
 
 ```text
-Use production-scope-reviewer.
+production-scope-reviewer를 사용해줘.
 
-game-design/concept-brief.md, game-design/core-loop.md,
-game-design/rules/*.md를 읽고 game-mvp-scope skill을 사용해.
+game-design/concept-brief.md,
+game-design/game-pillars.md,
+game-design/core-loop.md,
+game-design/system-overview.md,
+game-design/rules/*.md를 읽고
+MVP 범위를 Must / Later / Cut으로 나눠줘.
 
-MVP 범위를 Must / Later / Cut / Risk로 나누고,
-결과를 game-design/mvp-scope.md와
-ai/reviews/production/initial-scope-review.md에 저장해.
+결과는 아래 파일로 저장해줘:
+- game-design/mvp-scope.md
+- ai/reviews/production/scope-cut-1.md
+- ai/reviews/production/complexity-map.md
 ```
 
-### 7. Web LLM은 기획 이후 시각 보조로 사용
-
-Web LLM은 기획의 source of truth가 아닙니다. Agent + Skill이 만든 문서를 기준으로 아래 작업에만 사용합니다.
+UI 구현을 시작할 때:
 
 ```text
+ui-implementer를 사용해줘.
+
+아래 문서를 기준으로 MVP 화면을 구현해줘:
+- game-design/mvp-scope.md
+- game-design/systems/*.md
+- game-design/spreadsheets/*
+- ai/specs/ui/design-system.md
+- ai/specs/ui/*-screen.md
+
+구현 후 실행한 검증 명령과 남은 TODO를 정리해줘.
+```
+
+### 8. Web LLM 사용 위치
+
+Web LLM은 source of truth가 아닙니다. 아래처럼 시각 보조로만 사용합니다.
+
 - 컨셉 이미지
 - UI mockup
 - 아이콘 시안
 - 무드보드
 - 외부 레퍼런스 탐색
-```
 
-Web LLM 결과물은 바로 구현하지 않고 `game-design/art/` 또는 `ai/specs/ui/` 문서로 변환한 뒤 반영합니다.
+Web LLM 결과물은 바로 구현하지 않습니다. 먼저 `game-design/art/` 또는 `ai/specs/ui/` 문서로 정리한 뒤 구현에 반영합니다.
 
-### 8. 구현과 Preview 검증 요청
-
-기획, 규칙, 데이터, UI 명세가 생긴 뒤 `ui-implementer`에게 구현을 요청합니다.
+### 9. 전체 절차 요약
 
 ```text
-game-design/mvp-scope.md,
-game-design/rules/*.md,
-game-design/systems/*.md,
-game-design/spreadsheets/*,
-ai/specs/ui/*.md를 기준으로
-game-ui-implementation skill을 사용해서 MVP 화면을 구현해.
-```
-
-구현 뒤에는 Preview 검증을 요청합니다.
-
-```text
-game-browser-preview-review skill을 사용해서
-default, loading, empty, error, selected, disabled,
-hover/focus, mobile, desktop, long text, many items 상태를 검토해.
-
-결과는 ai/reviews/visual/round-1.md에 저장해.
-```
-
-### 9. 전체 플로우 요약
-
-```text
-사용자
+하네스 설치
   ↓
-대상 프로젝트에서 AI tool 실행
+대상 프로젝트 루트에서 AI tool 실행
   ↓
-game-director 호출 + 최소 입력 제공
+game-director 호출
   ↓
-concept-brief / pillars / core-loop 생성
+concept brief / pillars / core loop / system overview 생성
   ↓
-사용자가 다음 agent를 명시적으로 호출
+concept → rules → MVP scope → spreadsheet → balance
   ↓
-rules → MVP scope → spreadsheet → balance → system spec → UI spec
+system spec → UI spec
   ↓
-Web LLM은 이미지와 mockup 보조
+ui-implementer 구현
   ↓
-ui-implementer가 구현
-  ↓
-Preview / QA 검증
-```
-
----
-
-## 빠른 시작
-
-### Claude Code
-
-```text
-Use game-director.
-입력: 장르=roguelike deckbuilder, 플랫폼=web,
-핵심 재미=덱 빌딩 + 영구 성장, 분위기=다크 판타지,
-참고=Slay the Spire, Inscryption.
-game-concept-brief와 game-core-loop-design skill을 호출해서
-결과를 game-design/ 하위에 저장해.
-```
-
-### Codex CLI
-
-```bash
-codex run "Spawn the game-director custom agent. \
-  입력: 장르=roguelike deckbuilder, 플랫폼=web, \
-  핵심 재미=덱 빌딩 + 영구 성장. \
-  game-design/ 하위에 concept brief와 core loop를 저장해."
-```
-
-### Gemini CLI
-
-```bash
-gemini
-> /agents:game-director 장르=roguelike deckbuilder, 플랫폼=web, 핵심 재미=덱 빌딩 + 영구 성장
+browser-preview-reviewer 검토
 ```
 
 ---
