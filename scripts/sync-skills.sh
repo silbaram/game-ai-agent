@@ -14,7 +14,7 @@
 #   all      Claude Code + Codex + Gemini CLI
 #   claude   .claude/agents, .claude/skills
 #   codex    AGENTS.md, .agents/skills, .codex/agents, .codex/config.toml
-#   gemini   GEMINI.md, .gemini/skills, .gemini/commands, .agents/skills
+#   gemini   GEMINI.md, .gemini/skills, .agents/skills, .gemini/agents, .gemini/commands
 #
 set -euo pipefail
 
@@ -161,8 +161,17 @@ install_codex() {
 
 install_gemini() {
   copy_file "$ROOT_DIR/GEMINI.md" "$TARGET_DIR/GEMINI.md"
+
+  # Gemini CLI workspace skills
   sync_dir "$SOURCE_SKILLS_DIR" "$TARGET_DIR/.gemini/skills"
+
+  # Shared Agent Skills path used by Codex and Gemini
   sync_dir "$SOURCE_SKILLS_DIR" "$TARGET_DIR/.agents/skills"
+
+  # Gemini role definitions used by custom commands via @{...}
+  sync_dir "$SOURCE_AGENTS_DIR" "$TARGET_DIR/.gemini/agents"
+
+  # Gemini CLI custom commands
   sync_dir "$SOURCE_GEMINI_COMMANDS_DIR" "$TARGET_DIR/.gemini/commands"
 }
 

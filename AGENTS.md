@@ -69,7 +69,7 @@ agent가 새 기획 산출물을 만들 때는 **반드시 위 경로 규약을 
 
 ---
 
-## 3. 에이전트 구성 (7종)
+## 3. 에이전트 구성 (9종)
 
 | Agent | 역할 | 출력 위치 |
 |---|---|---|
@@ -80,6 +80,8 @@ agent가 새 기획 산출물을 만들 때는 **반드시 위 경로 규약을 
 | `balance-reviewer` | 성장곡선, 보상량, 드랍률, 가격, 이상치 검토 | `ai/reviews/balance/*.md` |
 | `production-scope-reviewer` | MVP 축소, 복잡도 평가, 구현 순서 | `ai/reviews/production/*.md`, `game-design/mvp-scope.md` |
 | `ui-planner` | UI 디자인 시스템, 화면 흐름, 화면별 상태/데이터 요구사항 | `ai/specs/ui/*.md` |
+| `ui-implementer` | Screen Spec과 Design System 기준의 실제 UI 구현 | `src/*`, `components/*`, `screens/*`, `tests/*`, 구현 요약 |
+| `browser-preview-reviewer` | 브라우저 preview 기반 UI 상태/반응형 검토 | `ai/reviews/visual/*.md` |
 
 각 에이전트는 특정 skill을 호출할 수 있다. 아래 섹션 4 참조.
 
@@ -88,11 +90,11 @@ agent가 새 기획 산출물을 만들 때는 **반드시 위 경로 규약을 
 - Codex custom agent: `<target>/.codex/agents/*.toml`
 - Gemini CLI role command: `<target>/.gemini/commands/agents/*.toml`
 
-Gemini CLI는 Claude/Codex와 같은 subagent manifest를 쓰지 않는다. 이 프로젝트에서는 공식 custom command로 `agents/*.md` 역할 정의를 주입한다.
+Gemini CLI는 Claude/Codex와 같은 subagent manifest를 쓰지 않는다. 이 프로젝트에서는 공식 custom command로 `.gemini/agents/*.md` 역할 정의를 주입한다.
 
 ---
 
-## 4. 스킬 구성 (11종)
+## 4. 스킬 구성 (12종)
 
 | Skill | 호출 주체 | 목적 |
 |---|---|---|
@@ -105,12 +107,14 @@ Gemini CLI는 Claude/Codex와 같은 subagent manifest를 쓰지 않는다. 이 
 | `game-balance-review` | `balance-reviewer` | 성장, 보상, 가격, 드랍률, 전투 시간 검토 |
 | `design-system-spec` | `ui-planner` | UI 디자인 시스템 토큰과 컴포넌트 규칙 정의 |
 | `game-screen-spec` | `ui-planner` | 화면별 상태, 데이터 요구사항, 인터랙션 명세 |
-| `game-ui-implementation` | Coding Agent | 화면 명세와 디자인 시스템을 실제 UI로 구현 |
-| `game-browser-preview-review` | Coding Agent / Reviewer | 브라우저 preview에서 화면 상태와 반응형 검토 |
+| `game-image-prompt-pack` | `game-concept-designer`, `ui-planner` | Web LLM용 컨셉 이미지, UI mockup, 아이콘 시안 프롬프트 작성 |
+| `game-ui-implementation` | `ui-implementer` | 화면 명세와 디자인 시스템을 실제 UI로 구현 |
+| `game-browser-preview-review` | `browser-preview-reviewer` | 브라우저 preview에서 화면 상태와 반응형 검토 |
 
 스킬의 실제 내용은 `skills/<skill-name>/SKILL.md`에 있다.
 플랫폼별 복사본은 대상 프로젝트의 `.claude/skills/`, `.agents/skills/`, `.gemini/skills/`에 자동 동기화된다.
-Claude Code용 agent 복사본은 대상 프로젝트의 `.claude/agents/`에, Codex용 TOML agent 복사본은 `.codex/agents/`에, Gemini용 role command 복사본은 `.gemini/commands/`에 자동 동기화된다.
+Claude Code용 agent 복사본은 대상 프로젝트의 `.claude/agents/`에, Codex용 TOML agent 복사본은 `.codex/agents/`에 자동 동기화된다.
+Gemini용 agent 역할 정의 복사본은 `.gemini/agents/`에, Gemini role command 복사본은 `.gemini/commands/`에 자동 동기화된다.
 
 ```bash
 bash scripts/sync-skills.sh --target /path/to/game-project --tool all
@@ -132,10 +136,10 @@ bash scripts/sync-skills.sh --target /path/to/game-project --tool all
 6. `spreadsheet-architect` → `game-spreadsheet-authoring` skill 실행 → 데이터 테이블 생성
 7. `balance-reviewer` → `game-balance-review` skill 실행 → 숫자 검토 → 5~6단계 피드백
 8. `game-rules-designer` → `game-system-spec` skill 실행 → MVP 시스템 개발 명세 확정
-9. `ui-planner` → `design-system-spec`, `game-screen-spec` skill 실행 → UI 명세 작성
+9. `ui-planner` → `design-system-spec`, `game-screen-spec`, `game-image-prompt-pack` skill 실행 → UI 명세 + mockup prompt 작성
 10. (외부) Web LLM으로 컨셉 이미지 / UI mockup 생성
-11. Claude Code / Codex / Gemini → `game-ui-implementation` skill 기준으로 실제 구현
-12. Claude Code / Codex / Gemini → `game-browser-preview-review` skill 기준으로 Preview / QA
+11. `ui-implementer` → `game-ui-implementation` skill 기준으로 실제 구현
+12. `browser-preview-reviewer` → `game-browser-preview-review` skill 기준으로 Preview / QA
 
 **절대 어기지 않는 규칙**: 4번 이후 반드시 5번을 거친다. MVP 축소 없이 스프레드시트, 시스템 명세, 구현에 들어가면 기획이 우주 규모로 부풀어 오른다.
 

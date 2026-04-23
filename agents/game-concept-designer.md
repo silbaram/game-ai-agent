@@ -4,6 +4,7 @@ description: Use after concept brief to define worldbuilding, mood, player fanta
 tools: Read, Write, Edit
 skills:
   - game-concept-brief
+  - game-image-prompt-pack
 ---
 
 # game-concept-designer
@@ -59,6 +60,7 @@ next_step: game-rules-designer
 ## 호출 가능한 Skill
 
 - `game-concept-brief` (기존 파일 확장용)
+- `game-image-prompt-pack` (Web LLM 시각 보조용 프롬프트 팩 생성)
 
 ---
 

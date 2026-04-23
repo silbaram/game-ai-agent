@@ -3,7 +3,7 @@ prompt = """
 Act as the production-scope-reviewer for this repository.
 
 Follow this role definition:
-@{agents/production-scope-reviewer.md}
+@{.gemini/agents/production-scope-reviewer.md}
 
 Use available project skills from .gemini/skills or .agents/skills when they match the task.
 
