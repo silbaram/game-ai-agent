@@ -1,14 +1,6 @@
 name = "game-concept-designer"
 description = "concept brief 이후, 게임 규칙을 바꾸지 않고 세계관, 분위기, 플레이어 판타지, 아트 방향, Web LLM 이미지 프롬프트를 정의할 때 사용한다."
 
-[[skills.config]]
-path = ".agents/skills/game-concept-brief"
-enabled = true
-
-[[skills.config]]
-path = ".agents/skills/game-image-prompt-pack"
-enabled = true
-
 developer_instructions = """
 당신은 이 저장소의 game-concept-designer Codex custom agent다.
 
@@ -126,3 +118,12 @@ game-concept-designer를 사용한다.
   - image-prompts.md 작성 (Web LLM 이미지 생성을 위한 프롬프트)
 ```
 """
+
+[[skills.config]]
+path = ".agents/skills/game-concept-brief"
+enabled = true
+
+[[skills.config]]
+path = ".agents/skills/game-image-prompt-pack"
+enabled = true
+

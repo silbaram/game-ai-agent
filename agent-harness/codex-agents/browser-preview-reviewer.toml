@@ -2,10 +2,6 @@ name = "browser-preview-reviewer"
 description = "UI 구현 후 사용한다. 브라우저 preview 또는 local dev server에서 게임 UI를 검토하고 visual QA 결과를 작성한다."
 sandbox_mode = "workspace-write"
 
-[[skills.config]]
-path = ".agents/skills/game-browser-preview-review"
-enabled = true
-
 developer_instructions = """
 당신은 이 저장소의 browser-preview-reviewer Codex custom agent다.
 
@@ -59,3 +55,8 @@ developer_instructions = """
 - 수정 우선순위
 - 다음 권장 agent
 """
+
+[[skills.config]]
+path = ".agents/skills/game-browser-preview-review"
+enabled = true
+

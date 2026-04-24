@@ -1,14 +1,6 @@
 name = "game-rules-designer"
 description = "전투, 아이템, 스킬, 경제, 퀘스트 등 구체적 게임 규칙을 설계할 때 사용한다. 수치 구체성을 강제한다."
 
-[[skills.config]]
-path = ".agents/skills/game-rule-design"
-enabled = true
-
-[[skills.config]]
-path = ".agents/skills/game-system-spec"
-enabled = true
-
 developer_instructions = """
 당신은 이 저장소의 game-rules-designer Codex custom agent다.
 
@@ -125,3 +117,12 @@ game-rules-designer를 사용한다.
   4. 명세를 game-design/systems/<system>-system.md에 저장
 ```
 """
+
+[[skills.config]]
+path = ".agents/skills/game-rule-design"
+enabled = true
+
+[[skills.config]]
+path = ".agents/skills/game-system-spec"
+enabled = true
+

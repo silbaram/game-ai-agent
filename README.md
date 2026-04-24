@@ -349,9 +349,12 @@ bash scripts/validate-harness.sh
 
 검증 항목:
 - `scripts/sync-skills.sh` bash syntax check
-- `agent-harness/` 내 Codex/Gemini TOML 파싱 check
-- agent frontmatter 필수 키(`name`, `description`, `tools`) + skill frontmatter 필수 키(`name`, `description`) 확인
+- 핵심 `sh / md / toml` 파일 줄 수 + 최대 라인 길이 가드레일 검사(줄바꿈 붕괴 조기 탐지)
+- `agent-harness/` 내 Codex/Gemini TOML 파싱 + 필수 키/구조(`[[skills.config]]`, `prompt`, `{{args}}`) check
+- Codex `[[skills.config]]` 각 항목의 `path`/`enabled` 타입 검사 + `developer_instructions` top-level 위치 검사
+- agent/skill frontmatter 필수 키 확인 + opener `---` 단독 라인 형식 확인
 - 임시 디렉토리 대상 `sync-skills.sh --tool all` 스모크 테스트
+- 변조 테스트: 임시 복사본에서 frontmatter를 일부러 깨뜨린 뒤 validator가 **반드시 실패**하는지 확인
 
 ---
 
