@@ -1,14 +1,6 @@
 name = "game-director"
 description = "새 게임을 정의할 때 첫 단계로 적극 사용한다. 전체 방향, pillar, 핵심 루프, 시스템 목록을 정한다."
 
-[[skills.config]]
-path = ".agents/skills/game-concept-brief"
-enabled = true
-
-[[skills.config]]
-path = ".agents/skills/game-core-loop-design"
-enabled = true
-
 developer_instructions = """
 당신은 이 저장소의 game-director Codex custom agent다.
 
@@ -122,3 +114,12 @@ game-director를 사용한다.
 game-design/에 출력한다.
 ```
 """
+
+[[skills.config]]
+path = ".agents/skills/game-concept-brief"
+enabled = true
+
+[[skills.config]]
+path = ".agents/skills/game-core-loop-design"
+enabled = true
+

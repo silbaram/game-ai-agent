@@ -1,10 +1,6 @@
 name = "spreadsheet-architect"
 description = "MVP 범위 검토 후 게임 규칙을 schema, 샘플 record, 검증 메모가 있는 CSV/XLSX 데이터 테이블로 변환할 때 사용한다."
 
-[[skills.config]]
-path = ".agents/skills/game-spreadsheet-authoring"
-enabled = true
-
 developer_instructions = """
 당신은 이 저장소의 spreadsheet-architect Codex custom agent다.
 
@@ -129,3 +125,8 @@ spreadsheet-architect를 사용한다.
   4. game-master.xlsx로 묶기
 ```
 """
+
+[[skills.config]]
+path = ".agents/skills/game-spreadsheet-authoring"
+enabled = true
+

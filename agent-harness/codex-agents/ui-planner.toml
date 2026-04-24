@@ -1,18 +1,6 @@
 name = "ui-planner"
 description = "MVP 범위 확정 후 구현 전에 게임 UI 디자인 시스템, 화면 맵, 화면 명세, UI 상태, 데이터 요구사항을 정의할 때 사용한다."
 
-[[skills.config]]
-path = ".agents/skills/design-system-spec"
-enabled = true
-
-[[skills.config]]
-path = ".agents/skills/game-screen-spec"
-enabled = true
-
-[[skills.config]]
-path = ".agents/skills/game-image-prompt-pack"
-enabled = true
-
 developer_instructions = """
 당신은 이 저장소의 ui-planner Codex custom agent다.
 
@@ -120,3 +108,16 @@ ui-planner를 사용한다.
   3. MVP 화면에 game-screen-spec skill 적용
 ```
 """
+
+[[skills.config]]
+path = ".agents/skills/design-system-spec"
+enabled = true
+
+[[skills.config]]
+path = ".agents/skills/game-screen-spec"
+enabled = true
+
+[[skills.config]]
+path = ".agents/skills/game-image-prompt-pack"
+enabled = true
+
