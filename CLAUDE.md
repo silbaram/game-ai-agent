@@ -89,8 +89,13 @@ Skill은 progressive disclosure 방식으로 로드된다:
 | `balance-reviewer` | Read, Bash (시뮬레이션), Write (리뷰 문서만) |
 | `production-scope-reviewer` | Read, Write |
 | `ui-planner` | Read, Write, Edit |
+| `ui-implementer` | Read, Write, Edit, Bash |
+| `browser-preview-reviewer` | Read, Write, Bash |
 
 각 agent 파일의 frontmatter에 이미 반영되어 있다.
+
+- `ui-implementer`는 실제 production source code(`src/*`, `components/*`, `screens/*`, `tests/*`)를 수정할 수 있다.
+- `browser-preview-reviewer`는 preview/test 명령과 리뷰 문서 작성에 집중하며, production source code를 직접 수정하지 않는다.
 
 ---
 

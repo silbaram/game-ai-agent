@@ -41,7 +41,12 @@ description: MVP 승인된 게임 시스템 규칙을 user flow, data model, UI 
 3. **Data Model**을 정의한다.
     - 엔티티 / 필드 / 관계
     - 스프레드시트의 테이블 구조와 런타임 객체 구조를 모두 기재
-    - TypeScript / Kotlin 중 하나의 타입 정의 포함 (프로젝트 언어에 맞춰)
+    - `target_stack`을 먼저 확인하고, 스택에 맞는 런타임 타입 정의를 포함한다.
+      - web: TypeScript 타입
+      - Unity: C# class / ScriptableObject 구조
+      - Unreal: C++ struct / DataTable row 구조
+      - Godot: GDScript Resource 또는 C# 타입
+      - 명시되지 않으면 TypeScript를 기본값으로 사용하고 문서에 assumption으로 남긴다.
 4. **규칙(Rules) 요약**을 붙인다.
     - 규칙 문서의 공식을 필요한 것만 발췌
     - 전체 규칙은 링크로 참조
@@ -93,6 +98,10 @@ next_step: ui-planner | game-ui-implementation
 ```
 
 ## 데이터 모델(Data Model)
+
+### target_stack 확인
+- `target_stack`: web
+- 타입 언어 선택: TypeScript
 
 ### 런타임 타입 (TypeScript)
 ```ts
@@ -177,6 +186,7 @@ export interface Inventory {
 - [ ] 엣지 케이스(Edge Cases)가 개발 관점에서 정리됨
 - [ ] 테스트 케이스(Test Cases)에 Given/When/Then 형식 사용
 - [ ] 비기능 요구사항이 있음
+- [ ] `target_stack` 확인 결과와 타입 언어 선택 근거(또는 기본값 assumption)가 문서에 남아 있음
 
 ---
 
