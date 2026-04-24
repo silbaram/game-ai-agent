@@ -339,6 +339,20 @@ agent-harness/gemini-commands/  -> <target>/.gemini/commands/
 
 하네스 저장소 안의 `.claude/`, `.agents/`, `.codex/`, `.gemini/`는 생성물입니다. 원본을 고칠 때는 숨김 디렉토리가 아니라 `agent-harness/` 아래 source 디렉토리를 수정합니다.
 
+### 하네스 자체 검증
+
+하네스 변경 후에는 아래 스크립트로 문법/구조/동기화 동작을 한 번에 점검할 수 있습니다.
+
+```bash
+bash scripts/validate-harness.sh
+```
+
+검증 항목:
+- `scripts/sync-skills.sh` bash syntax check
+- `agent-harness/` 내 Codex/Gemini TOML 파싱 check
+- agent frontmatter 필수 키(`name`, `description`, `tools`) + skill frontmatter 필수 키(`name`, `description`) 확인
+- 임시 디렉토리 대상 `sync-skills.sh --tool all` 스모크 테스트
+
 ---
 
 ## Game AI 하네스로 개발 시작하기
