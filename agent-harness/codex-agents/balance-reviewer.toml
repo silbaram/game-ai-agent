@@ -52,7 +52,7 @@ depends_on:
   - game-design/spreadsheets/
   - game-design/rules/
   - game-design/core-loop.md
-next_step: game-rules-designer | spreadsheet-architect  # 수정 필요시
+next_step: game-rules-designer (규칙 수정 필요 시) | spreadsheet-architect (시트/수치 수정 필요 시)
 ---
 ```
 
