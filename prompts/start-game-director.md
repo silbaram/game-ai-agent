@@ -2,6 +2,8 @@
 
 아래 프롬프트를 AI tool에 그대로 붙여 넣고, `<>` 부분만 바꾼다.
 
+`game-director를 사용해서 게임 뼈대 문서를 만들어줘.`처럼 필수 입력 없이 요청하면, agent는 파일을 만들지 않고 먼저 입력 질문을 해야 한다.
+
 ## 최소 버전
 
 ```text
@@ -23,6 +25,8 @@ game-director를 사용해서 게임 뼈대 문서를 만들어줘.
 - game-design/system-overview.md
 
 각 파일에는 produced_by, depends_on, next_step frontmatter를 넣어줘.
+
+부족한 입력이 있으면 추측하지 말고 먼저 질문해줘.
 ```
 
 ## 더 쉬운 입력표
