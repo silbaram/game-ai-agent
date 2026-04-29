@@ -107,7 +107,7 @@ game-concept-brief와 game-core-loop-design skill을 사용해서
 | 6    | 밸런스 검토                  | `balance-reviewer`          | `game-balance-review`                                              | `ai/reviews/balance/*.md`                                                   |
 | 7    | 시스템 개발 명세             | `game-rules-designer`       | `game-system-spec`                                                 | `game-design/systems/*.md`                                                  |
 | 8    | UI 명세와 사용자 플로우 차트 | `ui-planner`                | `design-system-spec`, `game-screen-spec`, `game-image-prompt-pack` | `ai/specs/ui/*.md`, `ai/specs/ui/user-flow-chart.md`                        |
-| 9    | 시각 자료 생성               | Web LLM                     | 없음                                                               | 이미지, mockup, 레퍼런스                                                    |
+| 9    | 시각 레퍼런스 생성           | Web LLM                     | 없음                                                               | 참고용 컨셉 이미지, UI mockup, 아이콘 시안                                  |
 | 10   | UI 구현                      | `ui-implementer`            | `game-ui-implementation`                                           | `src/*`, `components/*`, `screens/*`, `tests/*`                             |
 | 11   | 브라우저 검토                | `browser-preview-reviewer`  | `game-browser-preview-review`                                      | `ai/reviews/visual/*.md`                                                    |
 
@@ -382,19 +382,21 @@ user-flow-chart.md에는 아래 내용을 포함해줘:
 각 화면에는 default, loading, empty, error, disabled 상태를 포함해줘.
 ```
 
-### 9. Web LLM 시각 자료 생성
+### 9. Web LLM 시각 레퍼런스 생성
 
 사용:
 
 - Agent: 없음
 - Skill: 없음
 - 입력: `game-design/art/*.md`, `ai/specs/ui/*.md`
+- 저장 위치: `game-design/art/reference-images/`
 
 프롬프트:
 
 ```text
 아래 문서의 아트 디렉션과 프롬프트를 기준으로
 게임 컨셉 이미지, UI mockup, 아이콘 시안을 생성해줘.
+이 결과물은 최종 게임 에셋이 아니라 구현 전 참고용 시각 레퍼런스야.
 
 참조:
 - game-design/art/art-direction.md
@@ -404,8 +406,16 @@ user-flow-chart.md에는 아래 내용을 포함해줘:
 - ai/specs/ui/design-system.md
 - ai/specs/ui/screen-map.md
 
+생성 이미지는 아래 경로 규칙으로 저장해줘:
+- game-design/art/reference-images/concept/
+- game-design/art/reference-images/ui-mockups/
+- game-design/art/reference-images/item-icons/
+- game-design/art/reference-images/characters/
+- game-design/art/reference-images/backgrounds/
+
 결과물은 바로 구현하지 않고,
-파일명, 용도, 사용 화면, 반영할 디자인 변경점을 정리해줘.
+game-design/art/asset-key-map.md에 파일명, asset_key, 용도, 사용 화면,
+반영할 디자인 변경점, 최종 에셋 여부를 정리해줘.
 ```
 
 Web LLM 결과를 받은 뒤에는 `game-design/art/asset-key-map.md`나
